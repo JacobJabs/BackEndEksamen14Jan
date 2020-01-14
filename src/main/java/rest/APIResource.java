@@ -1,6 +1,7 @@
 package rest;
 
 import com.google.gson.Gson;
+import entities.AmountSearched;
 import entities.MovieInfo;
 import entities.MovieInfoAll;
 import entities.MovieRating;
@@ -98,7 +99,7 @@ public class APIResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("movie-info-all/{title}")
-    //@RolesAllowed("user")
+    @RolesAllowed("user")
     public String getMovieScores(@PathParam("title") String title) throws ProtocolException, IOException {
         Gson g = new Gson();
         if (cache(title)) {
@@ -106,7 +107,11 @@ public class APIResource {
             EntityManager em = emf.createEntityManager();
             try {
                 MovieInfo movie = (MovieInfo) em.createQuery("SELECT a FROM MovieInfo a WHERE a.title = :arg1").setParameter("arg1", title).getSingleResult();
-
+                AmountSearched as = (AmountSearched) em.createQuery("SELECT a FROM AmountSearched a WHERE a.movieInfo = :arg1").setParameter("arg1", movie).getSingleResult();
+                as.search();
+                em.getTransaction().begin();
+                em.persist(as);
+                em.getTransaction().commit();
                 return movie.toString();
             } finally {
                 em.close();
@@ -136,6 +141,8 @@ public class APIResource {
             s.add(new MovieRating(movie, b));
             s.add(new MovieRating(movie, c));
             movie.setScores(s);
+            AmountSearched as = new AmountSearched(1, movie);
+            em.persist(as);
             em.persist(movie);
             em.getTransaction().commit();
             em.close();
@@ -149,8 +156,8 @@ public class APIResource {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
         EntityManager em = emf.createEntityManager();
         try {
-            MovieInfo m = (MovieInfo) em.createQuery("SELECT a FROM MovieInfo a WHERE a.title = :arg1").setParameter("arg1", title).getSingleResult();
-            if (m != null) {
+            List<MovieInfo> m = em.createQuery("SELECT a FROM MovieInfo a WHERE a.title = :arg1").setParameter("arg1", title).getResultList();
+            if (m.size() > 0) {
                 return true;
             } else {
                 return false;
@@ -159,6 +166,32 @@ public class APIResource {
             em.close();
             emf.close();
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("movie-count/{title}")
+    @RolesAllowed("admin")
+    public String AmountMovieSearch(@PathParam("title") String title) {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<MovieInfo> m = em.createQuery("SELECT a FROM MovieInfo a WHERE a.title = :arg1").setParameter("arg1", title).getResultList();
+            if (m.size() > 0) {
+                AmountSearched as = (AmountSearched) em.createQuery("SELECT a FROM AmountSearched a WHERE a.movieInfo = :arg1").setParameter("arg1", m.get(0)).getSingleResult();
+
+                int amountSearchedCount = as.getAmount();
+                String json = "{\"title\":\"" + title + "\",\"searchAmount\":" + amountSearchedCount + "}";
+                return json;
+            } else {
+                return "Movie has not been searched before";
+            }
+
+        } finally {
+            em.close();
+            emf.close();
+        }
+
     }
 
 }
