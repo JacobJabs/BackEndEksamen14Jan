@@ -90,4 +90,23 @@ public class APIResource {
         
     }
     
+     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("movie-info-all/{title}")
+    //@RolesAllowed("user")
+    public String getMovieScores(@PathParam("title") String title) throws ProtocolException, IOException {
+        
+        String json = getMovie(title); 
+        String imdbScore = api.getMovieIMDBScore(title); 
+        String tomatoesScore = api.getMovieTomatoesScore(title); 
+        String metacriticScore = api.getMovieMetaCriticScore(title); 
+        json = json.substring(0, json.length() - 1); 
+        json = json + ",\"Scores\":["; 
+        String result = json + imdbScore + tomatoesScore + metacriticScore + "]" ;
+        
+        return result;
+        
+    }
+    
+    
 }

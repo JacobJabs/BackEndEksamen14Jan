@@ -44,47 +44,87 @@ public class fetchFacade {
 //        return sb.toString();
 //
 //    }
-
-    public String getMovieTitle(String title) throws MalformedURLException, ProtocolException, IOException
-    {
+    public String getMovieTitle(String title) throws MalformedURLException, ProtocolException, IOException {
         // String fullUrl = "http://dnd5eapi.co/api/spells/" + index;//"/?format=json";
-        String fullUrl = "http://exam-1187.mydemos.dk/movieInfo/" + title; 
+        String fullUrl = "http://exam-1187.mydemos.dk/movieInfo/" + title;
         URL url = new URL(fullUrl);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Accept", "application/json;charset=UTF-8");
-        try (Scanner scan = new Scanner(con.getInputStream()))
-        {
+        try (Scanner scan = new Scanner(con.getInputStream())) {
             String jsonStr = "";
-            while (scan.hasNext())
-            {
-                jsonStr += scan.nextLine();
-            }
-            return jsonStr;
-        }
-    }
-    
-    public String getMoviePoster(String title) throws MalformedURLException, ProtocolException, IOException
-    {
-        // String fullUrl = "http://dnd5eapi.co/api/spells/" + index;//"/?format=json";
-        String fullUrl2 = "http://exam-1187.mydemos.dk/moviePoster/" + title; 
-        URL url = new URL(fullUrl2);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("Accept", "application/json;charset=UTF-8");
-        try (Scanner scan = new Scanner(con.getInputStream()))
-        {
-            String jsonStr = "";
-            while (scan.hasNext())
-            {
+            while (scan.hasNext()) {
                 jsonStr += scan.nextLine();
             }
             return jsonStr;
         }
     }
 
-    public static void main(String[] args) throws ProtocolException, IOException, InterruptedException, ExecutionException
-    {
+    public String getMoviePoster(String title) throws MalformedURLException, ProtocolException, IOException {
+        // String fullUrl = "http://dnd5eapi.co/api/spells/" + index;//"/?format=json";
+        String fullUrl2 = "http://exam-1187.mydemos.dk/moviePoster/" + title;
+        URL url = new URL(fullUrl2);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+        try (Scanner scan = new Scanner(con.getInputStream())) {
+            String jsonStr = "";
+            while (scan.hasNext()) {
+                jsonStr += scan.nextLine();
+            }
+            return jsonStr;
+        }
+    }
+
+    public String getMovieIMDBScore(String title) throws MalformedURLException, ProtocolException, IOException {
+        // String fullUrl = "http://dnd5eapi.co/api/spells/" + index;//"/?format=json";
+        String fullUrl3 = "http://exam-1187.mydemos.dk/imdbScore/" + title;
+        URL url = new URL(fullUrl3);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+        try (Scanner scan = new Scanner(con.getInputStream())) {
+            String jsonStr = "";
+            while (scan.hasNext()) {
+                jsonStr += scan.nextLine();
+            }
+            return jsonStr;
+        }
+    }
+
+    public String getMovieTomatoesScore(String title) throws MalformedURLException, ProtocolException, IOException {
+        // String fullUrl = "http://dnd5eapi.co/api/spells/" + index;//"/?format=json";
+        String fullUrl4 = "http://exam-1187.mydemos.dk/tomatoesScore/" + title;
+        URL url = new URL(fullUrl4);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+        try (Scanner scan = new Scanner(con.getInputStream())) {
+            String jsonStr = "";
+            while (scan.hasNext()) {
+                jsonStr += scan.nextLine();
+            }
+            return jsonStr;
+        }
+    }
+
+    public String getMovieMetaCriticScore(String title) throws MalformedURLException, ProtocolException, IOException {
+        // String fullUrl = "http://dnd5eapi.co/api/spells/" + index;//"/?format=json";
+        String fullUrl5 = "http://exam-1187.mydemos.dk/metacriticScore/" + title;
+        URL url = new URL(fullUrl5);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+        try (Scanner scan = new Scanner(con.getInputStream())) {
+            String jsonStr = "";
+            while (scan.hasNext()) {
+                jsonStr += scan.nextLine();
+            }
+            return jsonStr;
+        }
+    }
+
+    public static void main(String[] args) throws ProtocolException, IOException, InterruptedException, ExecutionException {
         fetchFacade facade = new fetchFacade();
 //        String satan = facade.getDnDData(1);
 //        
