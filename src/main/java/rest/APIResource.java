@@ -77,10 +77,17 @@ public class APIResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("AllSpells/{index}")
+    @Path("movie-info-simple/{title}")
     //@RolesAllowed("user")
-    public String getAllSpells(@PathParam("index") int index) throws ProtocolException, IOException {
-        return api.getDnDData(index);
+    public String getMovie(@PathParam("title") String title) throws ProtocolException, IOException {
+        String movieInfo = api.getMovieTitle(title);
+        movieInfo = movieInfo.substring(0, movieInfo.length() - 1);
+        String moviePoster = api.getMoviePoster(title);
+        String[] split = moviePoster.split(",");
+        String result = movieInfo + "," + split[1];
+        //Gson g = new Gson();
+        return result;
+        
     }
     
 }
