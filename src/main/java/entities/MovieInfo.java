@@ -98,7 +98,12 @@ public class MovieInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.MovieInfo[ id=" + id + " ]";
+        String scoreString = "[";
+        for(MovieRating r : Scores){
+            scoreString += r.toString() + ",";
+        }
+        scoreString += "]";
+        return "{" + "\"title\":\"" + title + "\", \"year\":\"" + year + "\", \"plot\":\"" + plot + "\", \"directors\":\"" + directors + "\", \"genres\":\"" + genres + "\", \"cast\":\"" + cast + "\", \"poster\":\"" + poster + "\", \"Scores\":" + scoreString + "}";
     }
 
 }

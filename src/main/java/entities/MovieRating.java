@@ -71,7 +71,7 @@ public class MovieRating implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.MovieRating[ id=" + id + " ]";
+        return "{" + "\"source\":\"" + source + "\", \"rating\":\"" + rating + "\"}";
     }
 
 }

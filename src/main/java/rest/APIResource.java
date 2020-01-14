@@ -98,41 +98,67 @@ public class APIResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("movie-info-all/{title}")
-    @RolesAllowed("user")
+    //@RolesAllowed("user")
     public String getMovieScores(@PathParam("title") String title) throws ProtocolException, IOException {
         Gson g = new Gson();
-        
-        
-        String json = getMovie(title);
-        String imdbScore = api.getMovieIMDBScore(title);
-        String tomatoesScore = api.getMovieTomatoesScore(title);
-        String metacriticScore = api.getMovieMetaCriticScore(title);
-        MovieScore a = g.fromJson(imdbScore, MovieScore.class);
-        MovieScore b = g.fromJson(tomatoesScore, MovieScore.class);
-        MovieScore c = g.fromJson(metacriticScore, MovieScore.class);
-        json = json.substring(0, json.length() - 1);
-        json = json + ",\"Scores\":[";
-        String result = json + imdbScore + "," + tomatoesScore + "," + metacriticScore + "]}";
-        // https://jsonlint.com/
-        MovieInfoAll m = g.fromJson(result, MovieInfoAll.class);
-        System.out.println(m.getGenres());
-        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
-        EntityManager em = emf.createEntityManager();
+        if (cache(title)) {
+            EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
+            EntityManager em = emf.createEntityManager();
+            try {
+                MovieInfo movie = (MovieInfo) em.createQuery("SELECT a FROM MovieInfo a WHERE a.title = :arg1").setParameter("arg1", title).getSingleResult();
 
-        em.getTransaction().begin();
-        MovieInfo movie = new MovieInfo(m);
-        ArrayList<MovieRating> s = new ArrayList<MovieRating>();
-        s.add(new MovieRating(movie, a));
-        s.add(new MovieRating(movie, b));
-        s.add(new MovieRating(movie, c));
-        movie.setScores(s);
-        em.persist(movie);
-        em.getTransaction().commit();
-        em.close();
-        emf.close();
-        return result;
+                return movie.toString();
+            } finally {
+                em.close();
+                emf.close();
+            }
+        } else {
+            String json = getMovie(title);
+            String imdbScore = api.getMovieIMDBScore(title);
+            String tomatoesScore = api.getMovieTomatoesScore(title);
+            String metacriticScore = api.getMovieMetaCriticScore(title);
+            MovieScore a = g.fromJson(imdbScore, MovieScore.class);
+            MovieScore b = g.fromJson(tomatoesScore, MovieScore.class);
+            MovieScore c = g.fromJson(metacriticScore, MovieScore.class);
+            json = json.substring(0, json.length() - 1);
+            json = json + ",\"Scores\":[";
+            String result = json + imdbScore + "," + tomatoesScore + "," + metacriticScore + "]}";
+            // https://jsonlint.com/
+            MovieInfoAll m = g.fromJson(result, MovieInfoAll.class);
+            System.out.println(m.getGenres());
+            EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
+            EntityManager em = emf.createEntityManager();
+
+            em.getTransaction().begin();
+            MovieInfo movie = new MovieInfo(m);
+            ArrayList<MovieRating> s = new ArrayList<MovieRating>();
+            s.add(new MovieRating(movie, a));
+            s.add(new MovieRating(movie, b));
+            s.add(new MovieRating(movie, c));
+            movie.setScores(s);
+            em.persist(movie);
+            em.getTransaction().commit();
+            em.close();
+            emf.close();
+            return result;
+        }
 
     }
-    
+
+    public boolean cache(String title) {
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
+        EntityManager em = emf.createEntityManager();
+        try {
+            MovieInfo m = (MovieInfo) em.createQuery("SELECT a FROM MovieInfo a WHERE a.title = :arg1").setParameter("arg1", title).getSingleResult();
+            if (m != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            em.close();
+            emf.close();
+        }
+    }
 
 }
