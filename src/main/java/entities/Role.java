@@ -16,32 +16,32 @@ import javax.validation.constraints.Size;
 
 
 @Entity
-@Table(name = "RenameMe")
-public class RenameMe implements Serializable {
+@Table(name = "roles")
+public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "RenameMe", length = 20)
-    private String renameMe;
+    @Column(name = "role_name", length = 20)
+    private String roleName;
     
-    @ManyToMany(mappedBy = "RenameMe")  // ManyToMany & ManyToOne & OneToMany & OneToOne
+    @ManyToMany(mappedBy = "roleList")
     private List<User> userList;
 
-    public RenameMe() {
+    public Role() {
     }
 
-    public RenameMe(String renameMe) {
-        this.renameMe = renameMe;
+    public Role(String roleName) {
+        this.roleName = roleName;
     }
 
     public String getRoleName() {
-        return renameMe;
+        return roleName;
     }
 
-    public void setRoleName(String renameMe) {
-        this.renameMe = renameMe;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public List<User> getUserList() {
