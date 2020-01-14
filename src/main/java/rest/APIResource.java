@@ -1,15 +1,21 @@
 package rest;
 
 import com.google.gson.Gson;
+import entities.MovieInfo;
+import entities.MovieInfoAll;
+import entities.MovieRating;
+import entities.MovieScore;
 import entities.User;
 import facades.fetchFacade;
 import java.io.IOException;
 import java.net.ProtocolException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -73,8 +79,7 @@ public class APIResource {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
-    
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("movie-info-simple/{title}")
@@ -87,26 +92,47 @@ public class APIResource {
         String result = movieInfo + "," + split[1];
         //Gson g = new Gson();
         return result;
-        
+
     }
-    
-     @GET
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("movie-info-all/{title}")
     @RolesAllowed("user")
     public String getMovieScores(@PathParam("title") String title) throws ProtocolException, IOException {
+        Gson g = new Gson();
         
-        String json = getMovie(title); 
-        String imdbScore = api.getMovieIMDBScore(title); 
-        String tomatoesScore = api.getMovieTomatoesScore(title); 
-        String metacriticScore = api.getMovieMetaCriticScore(title); 
-        json = json.substring(0, json.length() - 1); 
-        json = json + ",\"Scores\":["; 
+        
+        String json = getMovie(title);
+        String imdbScore = api.getMovieIMDBScore(title);
+        String tomatoesScore = api.getMovieTomatoesScore(title);
+        String metacriticScore = api.getMovieMetaCriticScore(title);
+        MovieScore a = g.fromJson(imdbScore, MovieScore.class);
+        MovieScore b = g.fromJson(tomatoesScore, MovieScore.class);
+        MovieScore c = g.fromJson(metacriticScore, MovieScore.class);
+        json = json.substring(0, json.length() - 1);
+        json = json + ",\"Scores\":[";
         String result = json + imdbScore + "," + tomatoesScore + "," + metacriticScore + "]}";
         // https://jsonlint.com/
+        MovieInfoAll m = g.fromJson(result, MovieInfoAll.class);
+        System.out.println(m.getGenres());
+        EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
+        EntityManager em = emf.createEntityManager();
+
+        em.getTransaction().begin();
+        MovieInfo movie = new MovieInfo(m);
+        ArrayList<MovieRating> s = new ArrayList<MovieRating>();
+        s.add(new MovieRating(movie, a));
+        s.add(new MovieRating(movie, b));
+        s.add(new MovieRating(movie, c));
+        movie.setScores(s);
+        em.persist(movie);
+        em.getTransaction().commit();
+        em.close();
+        emf.close();
         return result;
-        
+
     }
     
-    
+
 }

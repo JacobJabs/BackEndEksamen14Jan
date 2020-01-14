@@ -20,8 +20,7 @@ public class MovieInfoSimple {
     private String genres;
     private String cast;
     private String poster;
-    ArrayList<Object> Scores = new ArrayList<Object>();
-
+    
     // Getter Methods 
     public String getTitle() {
         return title;
