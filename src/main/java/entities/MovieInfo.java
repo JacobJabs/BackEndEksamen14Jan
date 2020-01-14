@@ -102,6 +102,7 @@ public class MovieInfo implements Serializable {
         for(MovieRating r : Scores){
             scoreString += r.toString() + ",";
         }
+        scoreString = scoreString.substring(0, scoreString.length() -1);
         scoreString += "]";
         return "{" + "\"title\":\"" + title + "\", \"year\":\"" + year + "\", \"plot\":\"" + plot + "\", \"directors\":\"" + directors + "\", \"genres\":\"" + genres + "\", \"cast\":\"" + cast + "\", \"poster\":\"" + poster + "\", \"Scores\":" + scoreString + "}";
     }
