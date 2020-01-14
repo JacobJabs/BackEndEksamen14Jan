@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/JacobJabs/Flow3CA3.svg?branch=master)](https://travis-ci.org/JacobJabs/Flow3CA3)
-
+[![Build Status](https://travis-ci.org/JacobJabs/BackEndEksamen14Jan.svg?branch=master)](https://travis-ci.org/JacobJabs/BackEndEksamen14Jan)
 
 
 *This project is meant as start code for projects and exercises given in Flow-1+2 at http://cphbusiness.dk in the Study Program "AP degree in Computer Science"*
