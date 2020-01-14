@@ -93,7 +93,7 @@ public class APIResource {
      @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("movie-info-all/{title}")
-    //@RolesAllowed("user")
+    @RolesAllowed("user")
     public String getMovieScores(@PathParam("title") String title) throws ProtocolException, IOException {
         
         String json = getMovie(title); 

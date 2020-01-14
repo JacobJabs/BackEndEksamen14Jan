@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author jacob
  */
 public class MovieInfoSimple {
-
+// https://www.site24x7.com/tools/json-to-java.html
     private String title;
     private float year;
     private String plot;
