@@ -99,7 +99,7 @@ public class APIResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("movie-info-all/{title}")
-    @RolesAllowed("user")
+    @RolesAllowed({"user", "admin"})
     public String getMovieScores(@PathParam("title") String title) throws ProtocolException, IOException {
         Gson g = new Gson();
         if (cache(title)) {
