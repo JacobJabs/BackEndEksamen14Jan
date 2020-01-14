@@ -102,8 +102,8 @@ public class APIResource {
         String metacriticScore = api.getMovieMetaCriticScore(title); 
         json = json.substring(0, json.length() - 1); 
         json = json + ",\"Scores\":["; 
-        String result = json + imdbScore + tomatoesScore + metacriticScore + "]" ;
-        
+        String result = json + imdbScore + "," + tomatoesScore + "," + metacriticScore + "]}";
+        // https://jsonlint.com/
         return result;
         
     }
